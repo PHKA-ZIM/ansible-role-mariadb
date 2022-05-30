@@ -23,7 +23,7 @@
   register: datadir
 
 - name: Save datadir to var
-  when: datadir is defined
+  when: not datadir.skipped
   become: true
   ansible.builtin.set_fact:
     mariadb_stored_datadir: "{{ datadir['msg'] | regex_replace('^(.*\/[^\/]+)\/*$','\\1') }}"
