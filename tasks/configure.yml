@@ -56,6 +56,7 @@
         state: absent
 
 - name: Copy global MariaDB configuration
+  become: true
   ansible.builtin.template:
     src: mariadb.cnf.j2
     dest: "{{ mariadb_config_file }}"
@@ -63,6 +64,7 @@
   notify: restart mariadb
 
 - name: Ensure MariaDB is started and enabled on boot
+  become: true
   ansible.builtin.service:
     name: mariadb
     state: started
