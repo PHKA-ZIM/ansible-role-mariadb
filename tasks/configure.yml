@@ -13,7 +13,6 @@
     - "{{ mariadb_unix_socket }}"
     - "{{ mariadb_default_unix_socket }}"
   register: sockets
-  failed_when: sockets.results | map(attribute='stat') | selectattr('exists', 'equalto', true) | length <= 0
 
 - name: Save socket as var
   become: true
