@@ -1,5 +1,6 @@
 ---
 - name: Ensure MariaDB databases are present (or absent)
+  become: true
   community.mysql.mysql_db:
     name: "{{ item.name }}"
     collation: "{{ item.collation | default('utf8mb4_general_ci') }}"
