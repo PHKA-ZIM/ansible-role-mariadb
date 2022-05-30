@@ -1,6 +1,7 @@
 ---
 mariadb_packages:
   - mariadb-server
+  - python3-netaddr
   - python3-pymysql
 
 mariadb_user: mysql
