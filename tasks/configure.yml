@@ -69,7 +69,7 @@
 
 - name: Correct alternatives link
   become: true
-  ansible.general.alternatives:
+  community.general.alternatives:
     name: "{{ mariadb_alternatives_name }}"
     path: "{{ mariadb_config_file }}"
   notify: restart mariadb
