@@ -91,7 +91,7 @@ mariadb_expire_logs_days: 10
 # Replication users
 # same keys as mariadb_users above
 # priv is set to "*.*:REPLICATION SLAVE" by default
-mariadb_replication_user: []
+mariadb_replication_users: []
 
 # Set true to uninstall MariaDB
 mariadb_uninstall: false

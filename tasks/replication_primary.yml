@@ -9,5 +9,5 @@
     priv: "{{ item.priv | default('*.*:REPLICATION REPLICA') }}"
     state: present
     login_unix_socket: "{{ mariadb_unix_socket }}"
-  with_items: "{{ mariadb_replication_user }}"
+  with_items: "{{ mariadb_replication_users }}"
   no_log: true

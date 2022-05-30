@@ -17,7 +17,7 @@
     primary_password: "{{ item.password }}"
     primary_use_gtid: "{{ mariadb_replication_gtid | default('replica_pos') }}"
     login_unix_socket: "{{ mariadb_unix_socket }}"
-  loop: "{{ mariadb_replication_user }}"
+  loop: "{{ mariadb_replication_users }}"
   no_log: true
 
 - name: Reset replica replication
