@@ -1,22 +1,36 @@
 ---
+- name: Check if file exists
+  become: true
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - "{{ mariadb_unix_socket }}"
+    - "{{ mariadb_default_unix_socket }}"
+  register: sockets
+
+- name: Use socket
+  when: sockets.results | map(attribute='stat') | selectattr('exists', 'equalto', true) | length > 0
+  become: true
+  ansible.builtin.setfact:
+    unix_socket: "{{ sockets.results | map(attribute='stat') | selectattr('exists', 'equalto', true) | map(attribute='path') | first }}"
+
 - name: Get configured data-dir
+  when: unix_socket is defined
   become: true
   community.mysql.mysql_variables:
     variable: datadir
-    login_unix_socket: "{{ item }}"
-  with_first_found:
-    - "{{ mariadb_unix_socket }}"
-    - "{{ mariadb_default_unix_socket }}"
+    login_unix_socket: "{{ unix_socket }}"
   register: datadir
 
 - name: Save datadir to var
+  when: datadir is defined
   become: true
   ansible.builtin.set_fact:
     mariadb_stored_datadir: "{{ datadir.results | map(attribute='msg') | first | regex_replace('^(.*\/[^\/]+)\/*$','\\1') }}"
     mariadb_given_datadir: "{{ mariadb_datadir | regex_replace('^(.*\/[^\/]+)\/*$','\\1') }}"
 
 - name: Move datadir if needed
-  when: mariadb_stored_datadir != mariadb_given_datadir
+  when: mariadb_stored_datadir is defined and mariadb_given_datadir is defined and mariadb_stored_datadir != mariadb_given_datadir
   block:
     - name: Stop MariaDB server
       become: true
