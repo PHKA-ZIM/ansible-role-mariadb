@@ -26,7 +26,7 @@
   when: datadir is defined
   become: true
   ansible.builtin.set_fact:
-    mariadb_stored_datadir: "{{ datadir.results | map(attribute='msg') | first | regex_replace('^(.*\/[^\/]+)\/*$','\\1') }}"
+    mariadb_stored_datadir: "{{ datadir['msg'] | regex_replace('^(.*\/[^\/]+)\/*$','\\1') }}"
     mariadb_given_datadir: "{{ mariadb_datadir | regex_replace('^(.*\/[^\/]+)\/*$','\\1') }}"
 
 - name: Move datadir if needed
