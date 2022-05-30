@@ -11,7 +11,7 @@
 - name: Use socket
   when: sockets.results | map(attribute='stat') | selectattr('exists', 'equalto', true) | length > 0
   become: true
-  ansible.builtin.setfact:
+  ansible.builtin.set_fact:
     unix_socket: "{{ sockets.results | map(attribute='stat') | selectattr('exists', 'equalto', true) | map(attribute='path') | first }}"
 
 - name: Get configured data-dir
