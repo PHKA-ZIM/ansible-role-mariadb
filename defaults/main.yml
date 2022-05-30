@@ -7,7 +7,7 @@ mariadb_enabled_on_startup: true
 mariadb_can_restart: true
 
 # MariaDB configuration file
-mariadb_config_file: "{{ mariadb_path }}/mariadb.cnf"
+mariadb_config_file: "{{ mariadb_path }}/mariadb.cnf.ansible"
 
 # Basic settings
 mariadb_datadir: /var/lib/mysql/

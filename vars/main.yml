@@ -5,4 +5,5 @@ mariadb_packages:
 
 mariadb_user: mysql
 mariadb_path: /etc/mysql/
+mariadb_alternatives_name: my.cnf
 mariadb_default_unix_socket: /run/mysqld/mysqld.sock
