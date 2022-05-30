@@ -43,7 +43,7 @@
       ansible.builtin.copy:
         src: "{{ mariadb_stored_datadir }}"
         dest: "{{ mariadb_given_datadir }}"
-        user: "{{ mariadb_user }}"
+        owner: "{{ mariadb_user }}"
         group: "{{ mariadb_user }}"
         mode: preserve
         remote_src: true
