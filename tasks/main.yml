@@ -1,0 +1,8 @@
+---
+- name: Install mariadb
+  ansible.builtin.include_tasks: install.yml
+  when: mariadb_uninstall == false
+
+- name: Uninstall mariadb
+  ansible.builtin.include_tasks: uninstall.yml
+  when: mariadb_uninstall == true

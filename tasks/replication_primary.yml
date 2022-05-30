@@ -1,0 +1,13 @@
+---
+- name: Ensure replication user exists on primary
+  when: not ansible_check_mode
+  become: true
+  community.mysql.mysql_user:
+    name: "{{ item.name }}"
+    host: "{{ item.host | default('%') }}"
+    password: "{{ item.password }}"
+    priv: "{{ item.priv | default('*.*:REPLICATION REPLICA') }}"
+    state: present
+    login_unix_socket: "{{ mariadb_unix_socket }}"
+  with_items: "{{ mariadb_replication_user }}"
+  no_log: true

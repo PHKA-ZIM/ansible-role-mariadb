@@ -1,0 +1,43 @@
+---
+- name: Check replica replication status
+  become: true
+  community.mysql.mysql_replication:
+    mode: getreplica
+    login_unix_socket: "{{ mariadb_unix_socket }}"
+  register: replica
+  no_log: true
+
+- name: Configure replication on the replica
+  when: not replica.Is_Replica
+  become: true
+  community.mysql.mysql_replication:
+    mode: changeprimary
+    primary_host: "{{ mariadb_replication_primary_ip }}"
+    primary_user: "{{ item.name }}"
+    primary_password: "{{ item.password }}"
+    primary_use_gtid: "{{ mariadb_replication_gtid | default('replica_pos') }}"
+    login_unix_socket: "{{ mariadb_unix_socket }}"
+  loop: "{{ mariadb_replication_user }}"
+  no_log: true
+
+- name: Reset replica replication
+  when: not replica.Is_Replica
+  become: true
+  community.mysql.mysql_replication:
+    mode: resetreplica
+    login_unix_socket: "{{ mariadb_unix_socket }}"
+
+- name: Check replica replication status (second time)
+  become: true
+  community.mysql.mysql_replication:
+    mode: getreplica
+    login_unix_socket: "{{ mariadb_unix_socket }}"
+  register: replica2
+  no_log: true
+
+- name: Start replica replication
+  when: replica2.Slave_IO_Running == "No"
+  become: true
+  community.mysql.mysql_replication:
+    mode: startreplica
+    login_unix_socket: "{{ mariadb_unix_socket }}"

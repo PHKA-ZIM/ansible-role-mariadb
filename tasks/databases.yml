@@ -1,0 +1,9 @@
+---
+- name: Ensure MariaDB databases are present (or absent)
+  community.mysql.mysql_db:
+    name: "{{ item.name }}"
+    collation: "{{ item.collation | default('utf8mb4_general_ci') }}"
+    encoding: "{{ item.encoding | default('utf8mb4') }}"
+    state: "{{ item.state | default('present') }}"
+    login_unix_socket: "{{ mariadb_unix_socket }}"
+  with_items: "{{ mariadb_databases }}"

@@ -1,0 +1,13 @@
+---
+- name: Stop mariadb
+  become: true
+  ansible.builtin.service:
+    name: mysql
+    state: stopped
+
+- name: Remove repositories for mariadb and uninstall it
+  ansible.builtin.import_role:  
+    name: ansible-role-installer
+  vars:
+    installer_packages: "{{ mariadb_packages }}"
+    installer_uninstall: true

@@ -1,0 +1,28 @@
+---
+- name: include task setup.yml
+  ansible.builtin.import_tasks: setup.yml
+
+- name: include task configure.yml
+  ansible.builtin.import_tasks: configure.yml
+
+- name: include task databases.yml
+  ansible.builtin.import_tasks: databases.yml
+  when:
+    - mariadb_databases is defined
+    - mariadb_replication_role != "secondary"
+
+- name: include task users.yml
+  ansible.builtin.import_tasks: users.yml
+  when:
+    - mariadb_users is defined
+    - mariadb_replication_role != "secondary"
+
+- name: include task replication_primary.yml
+  ansible.builtin.import_tasks: replication_primary.yml
+  when: mariadb_replication_role == "primary"
+
+- name: include task replication_secondary.yml
+  ansible.builtin.import_tasks: replication_secondary.yml
+  when:
+    - not ansible_check_mode
+    - mariadb_replication_role == "secondary"

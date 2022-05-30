@@ -1,0 +1,6 @@
+---
+- name: Install mariadb
+  ansible.builtin.import_role:  
+    name: ansible-role-installer
+  vars:
+    installer_packages: "{{ mariadb_packages }}"

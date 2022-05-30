@@ -1,0 +1,55 @@
+---
+- name: Get configured data-dir
+  become: true
+  community.mysql.mysql_variables:
+    variable: datadir
+    login_unix_socket: "{{ item }}"
+  with_first_found:
+    - "{{ mariadb_unix_socket }}"
+    - "{{ mariadb_default_unix_socket }}"
+  register: datadir
+
+- name: Save datadir to var
+  become: true
+  ansible.builtin.set_fact:
+    mariadb_stored_datadir: "{{ datadir.results | map(attribute='msg') | first | regex_replace('^(.*\/[^\/]+)\/*$','\\1') }}"
+    mariadb_given_datadir: "{{ mariadb_datadir | regex_replace('^(.*\/[^\/]+)\/*$','\\1') }}"
+
+- name: Move datadir if needed
+  when: mariadb_stored_datadir != mariadb_given_datadir
+  block:
+    - name: Stop MariaDB server
+      become: true
+      ansible.builtin.service:
+        service: mariadb
+        state: stopped
+
+    - name: Copy datadir
+      become: true
+      ansible.builtin.copy:
+        src: "{{ mariadb_stored_datadir }}"
+        dest: "{{ mariadb_given_datadir }}"
+        user: "{{ mariadb_user }}"
+        group: "{{ mariadb_user }}"
+        mode: preserve
+        remote_src: true
+        force: yes
+
+    - name: Remove default datadir
+      become: true
+      ansible.builtin.file:
+        path: "{{ mariadb_stored_datadir }}"
+        state: absent
+
+- name: Copy global MariaDB configuration
+  ansible.builtin.template:
+    src: mariadb.cnf.j2
+    dest: "{{ mariadb_config_file }}"
+    force: true
+  notify: restart mariadb
+
+- name: Ensure MariaDB is started and enabled on boot
+  ansible.builtin.service:
+    name: mariadb
+    state: started
+    enabled: "{{ mariadb_enabled_on_startup }}"

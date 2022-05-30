@@ -1,0 +1,8 @@
+---
+mariadb_packages:
+  - mariadb-server
+  - python3-pymysql
+
+mariadb_user: mysql
+mariadb_path: /etc/mysql/
+mariadb_default_unix_socket: /run/mysqld/mysqld.sock
