@@ -12,7 +12,7 @@
   become: true
   community.mysql.mysql_replication:
     mode: changeprimary
-    primary_host: "{% if mariadb_replication_primary | ansible.utils.ipaddr %}{{ mariadb_replication_primary_ip }}{% elif mariadb_replication_primary in host_vars %}{{ host_vars[mariadb_replication_primary]['ansible_host'] }}{% else %}{{ mariadb_replication_primary }}{% endif %}" 
+    primary_host: "{{ mariadb_replication_primary_ip }}" 
     primary_user: "{{ item.name }}"
     primary_password: "{{ item.password }}"
     primary_use_gtid: "{{ mariadb_replication_gtid | default('replica_pos') }}"
