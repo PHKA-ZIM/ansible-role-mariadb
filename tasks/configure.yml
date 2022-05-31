@@ -23,8 +23,8 @@
     - name: Copy datadir
       become: true
       ansible.builtin.copy:
-        src: "{{ mariadb_stored_datadir }}"
-        dest: "{{ mariadb_datadir }}"
+        src: "{{ mariadb_stored_datadir }}/"
+        dest: "{{ mariadb_datadir }}/"
         owner: "{{ mariadb_user }}"
         group: "{{ mariadb_user }}"
         mode: preserve
