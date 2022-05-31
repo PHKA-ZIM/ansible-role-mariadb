@@ -12,7 +12,7 @@
     mariadb_datadir: "{{ mariadb_datadir | regex_replace('^(.*\\/[^\\/]+)\\/*$','\\1') }}"
 
 - name: Move datadir if needed
-  when: mariadb_stored_datadir != mariadb_given_datadir
+  when: mariadb_stored_datadir != mariadb_datadir
   block:
     - name: Stop MariaDB server
       become: true
