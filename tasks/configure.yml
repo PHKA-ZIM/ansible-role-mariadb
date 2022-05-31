@@ -1,36 +1,15 @@
 ---
-- name: Check if MariaDB is started
-  become: true
-  ansible.builtin.service:
-    service: mariadb
-    state: started
-
-- name: Check if file exists
-  become: true
-  ansible.builtin.stat:
-    path: "{{ item }}"
-  loop:
-    - "{{ mariadb_unix_socket }}"
-    - "{{ mariadb_default_unix_socket }}"
-  register: sockets
-
-- name: Save socket as var
-  become: true
-  ansible.builtin.set_fact:
-    unix_socket: "{{ sockets.results | map(attribute='stat') | selectattr('exists', 'equalto', true) | map(attribute='path') | first }}"
-
 - name: Get configured data-dir
   become: true
-  community.mysql.mysql_variables:
-    variable: datadir
-    login_unix_socket: "{{ unix_socket }}"
-  register: datadir
+  ansible.builtin.shell:
+    cmd: /usr/sbin/mysqld --verbose --help | grep datadir | tail -1
+  register: mariadb_stored_datadir
 
 - name: Save datadir as var
   become: true
   ansible.builtin.set_fact:
-    mariadb_stored_datadir: "{{ datadir['msg'] | regex_replace('^(.*\/[^\/]+)\/*$','\\1') }}"
-    mariadb_given_datadir: "{{ mariadb_datadir | regex_replace('^(.*\/[^\/]+)\/*$','\\1') }}"
+    mariadb_stored_datadir: "{{ mariadb_stored_datadir.stdout | regex_replace('^datadir\\s*(\\/.*)\\/*\\s*$', '\\1') | regex_replace('^(.*\\/[^\\/]+)\\/*$','\\1') }}"
+    mariadb_datadir: "{{ mariadb_datadir | regex_replace('^(.*\\/[^\\/]+)\\/*$','\\1') }}"
 
 - name: Move datadir if needed
   when: mariadb_stored_datadir != mariadb_given_datadir
@@ -45,14 +24,14 @@
       become: true
       ansible.builtin.copy:
         src: "{{ mariadb_stored_datadir }}"
-        dest: "{{ mariadb_given_datadir }}"
+        dest: "{{ mariadb_datadir }}"
         owner: "{{ mariadb_user }}"
         group: "{{ mariadb_user }}"
         mode: preserve
         remote_src: true
-        force: yes
+        force: true
 
-    - name: Remove default datadir
+    - name: Remove old datadir
       become: true
       ansible.builtin.file:
         path: "{{ mariadb_stored_datadir }}"
@@ -66,11 +45,23 @@
     force: true
   notify: restart mariadb
 
-- name: Correct alternatives link
+- name: Set alternatives link
   become: true
   community.general.alternatives:
     name: "{{ mariadb_alternatives_name }}"
     path: "{{ mariadb_config_file }}"
+  notify: restart mariadb
+
+- name: Be sure databases are installed correctly
+  become: true
+  ansible.builtin.command:
+    cmd: |
+      mariadb-install-db
+        --auth-root-authentication-method=socket
+        --skip-name-resolve
+        --skip-test-db
+        --user={{ mariadb_user }}
+    creates: "{{ mariadb_datadir }}/mysql/user.frm"
   notify: restart mariadb
 
 - name: Ensure MariaDB is started and enabled on boot
