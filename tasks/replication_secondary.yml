@@ -10,20 +10,13 @@
 - name: Stop replication on error
   when: replica.Is_Replica and replica.Last_IO_Errno in [1045]
   become: true
-  community.mysql.mysql_replication:
-    mode: stopreplica
+  community.mysql.mysql_query:
+    query: STOP_REPLICA; RESET_REPLICA;
     login_unix_socket: "{{ mariadb_unix_socket }}"
   register: hasError
 
-- name: Reset replication
-  when: hasError.changed
-  become: true
-  community.mysql.mysql_replication:
-    mode: resetreplica
-    login_unix_socket: "{{ mariadb_unix_socket }}"
-
 - name: Configure replication on the replica
-  when: not replica.Is_Replica or hasError.changed
+  when: not replica.Is_Replica or hasError is defined
   become: true
   community.mysql.mysql_replication:
     mode: changeprimary
@@ -36,7 +29,7 @@
   no_log: true
 
 - name: Reset replica replication
-  when: not replica.Is_Replica or hasError.changed
+  when: not replica.Is_Replica or hasError is defined
   become: true
   community.mysql.mysql_replication:
     mode: resetreplica
