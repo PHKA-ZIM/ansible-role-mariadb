@@ -8,7 +8,7 @@
   no_log: true
 
 - name: Configure replication on the replica
-  when: not replica.Is_Replica
+  when: not replica.Is_Replica or (replica.Is_Replica and replica.Last_IO_Errno == 1045)
   become: true
   community.mysql.mysql_replication:
     mode: changeprimary
@@ -21,7 +21,7 @@
   no_log: true
 
 - name: Reset replica replication
-  when: not replica.Is_Replica
+  when: not replica.Is_Replica or (replica.Is_Replica and replica.Last_IO_Errno == 1045)
   become: true
   community.mysql.mysql_replication:
     mode: resetreplica
