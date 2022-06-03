@@ -16,7 +16,7 @@
   register: reset
 
 - name: Configure replication on the replica
-  when: not replica.Is_Replica or reset.changed
+  when: not replica.Is_Replica or reset is defined
   become: true
   community.mysql.mysql_replication:
     mode: changeprimary
@@ -29,7 +29,7 @@
   no_log: true
 
 - name: Reset replica replication
-  when: not replica.Is_Replica or reset.changed
+  when: not replica.Is_Replica or reset is defined
   become: true
   community.mysql.mysql_replication:
     mode: resetreplica
