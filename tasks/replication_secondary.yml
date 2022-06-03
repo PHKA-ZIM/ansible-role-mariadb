@@ -11,7 +11,7 @@
   when: replica.Is_Replica and replica.Last_IO_Errno in [1045]
   become: true
   community.mysql.mysql_query:
-    query: STOP_REPLICA; RESET_REPLICA;
+    query: STOP REPLICA; RESET REPLICA;
     login_unix_socket: "{{ mariadb_unix_socket }}"
   register: hasError
 
