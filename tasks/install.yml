@@ -30,4 +30,4 @@
 - name: include task backup.yml
   ansible.builtin.import_tasks: backup.yml
   when:
-    - mariadb_replication_role == "secondary" and mariadb_backup_db
+    - mariadb_backup_db
