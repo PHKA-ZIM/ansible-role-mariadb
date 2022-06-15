@@ -43,7 +43,7 @@ binlog_ignore_db = {{ db.name }}
 {% endfor %}
 {% endif %}
 
-{% if mariadb_replication_role == 'secondary' %}
+{% if mariadb_replication_role == 'replica' %}
 read_only
 relay-log = relay-bin
 relay-log-index = relay-bin.index
