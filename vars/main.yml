@@ -2,8 +2,11 @@
 mariadb_packages:
   - mariadb-server
   - python3-pymysql
+  - cron
 
 mariadb_user: mysql
 mariadb_path: /etc/mysql/
+mariadb_crond_path: /etc/cron.d/
+mariadb_dump_bin: /usr/bin/mariadb-dump
 mariadb_alternatives_name: my.cnf
 mariadb_default_unix_socket: /run/mysqld/mysqld.sock

@@ -93,5 +93,19 @@ mariadb_expire_logs_days: 10
 # priv is set to "*.*:REPLICATION SLAVE" by default
 mariadb_replication_users: []
 
+# Backups
+mariadb_backup_db: false
+mariadb_backup_db_cron_min: 50
+mariadb_backup_db_cron_hour: 00
+mariadb_backup_db_dir: /opt/backup
+# set to "1>" to get only STDERR on cron
+mariadb_backup_cron_std_output: "2>&1 | tee"
+
+mariadb_backup_remove_backups: true
+mariadb_backup_remove_count: 24
+
+# DB to backup
+mariadb_backup_db_name: []
+
 # Set true to uninstall MariaDB
 mariadb_uninstall: false

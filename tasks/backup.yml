@@ -1,0 +1,16 @@
+---
+- name: Ensure backup directory exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ mariadb_backup_db_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Create cron file
+  become: true
+  template:
+    src: mariadb-backup.j2
+    dest: "{{ mariadb_crond_path }}/mariadb-backup"
+    mode: 0644

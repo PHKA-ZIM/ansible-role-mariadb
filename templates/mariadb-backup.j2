@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+
+# use /bin/bash to run commands, no matter what /etc/passwd says
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# m h dom mon dow user command
+
+{% if db in mariadb_backup_db_name | length > 0 %}
+{% for db_name in mariadb_backup_db_name %}
+{{ mariadb_backup_db_cron_min }} {{ mariadb_backup_db_cron_hour }} * * * root {{ mariadb_dump_bin }} --databases {{ db_name }} --dump-slave=2 | gzip > "{{ mariadb_backup_db_dir }}/$(date +%F_%H%M%S)_{{ db_name }}.sql.gz"{% if mariadb_backup_remove_backups %} && find {{ mariadb_backup_db_dir }} -maxdepth 0 -name "*_{{ db_name }}.sql.gz" -type f -exec ls -1t {} + | tail -n +{{ mariadb_backup_remove_count + 1 }} | xargs rm -f{% endif %} {{ mariadb_backup_cron_std_output }} "{{ mariadb_backup_db_dir }}/mariadb_dump_db.log"
+{% endfor %}
+{% else %}
+# no backup jobs defined
+{% endif %}
