@@ -20,16 +20,22 @@
         service: mariadb
         state: stopped
 
-    - name: Copy datadir
+    - name: Check if folder {{ mariadb_datadir }} exists
+      become: true
+      ansible.builtin.stat:
+        path: "{{ mariadb_datadir }}"
+      register: folder
+
+    - name: Copy datadir if not
       become: true
       ansible.builtin.copy:
-        src: "{{ mariadb_stored_datadir }}/"
-        dest: "{{ mariadb_datadir }}/"
+        src: "{{ mariadb_stored_datadir }}"
+        dest: "{{ mariadb_datadir }}"
         owner: "{{ mariadb_user }}"
         group: "{{ mariadb_user }}"
         mode: preserve
         remote_src: true
-        force: true
+      when: not folder.stat.exists
 
     - name: Remove old datadir
       become: true
