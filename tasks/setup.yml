@@ -2,7 +2,7 @@
 - name: Copy key
   become: true
   ansible.builtin.get_url:
-    src: "{{ mariadb_key_url }}"
+    url: "{{ mariadb_key_url }}"
     checksum: "sha256:{{ mariadb_key_url }}.sha256"
     dest: "{{ mariadb_key_path }}/{{ mariadb_key_name }}"
     force: true
