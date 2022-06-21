@@ -9,5 +9,14 @@
   ansible.builtin.import_role:  
     name: ansible-role-installer
   vars:
+    installer_repositories:
+      - "deb [arch=amd64,arm64,signed-by={{ mariadb_key_path }}{{ mariadb_key_name }}] https://dlm.mariadb.com/repo/mariadb-server/{{ mariadb_version }}/repo/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main"
+      - "deb [arch=amd64,arm64,signed-by={{ mariadb_key_path }}{{ mariadb_key_name }}] https://dlm.mariadb.com/repo/mariadb-server/{{ mariadb_version }}/repo/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main/debug"
     installer_packages: "{{ mariadb_packages }}"
     installer_uninstall: true
+
+- name: Remove key
+  become: true
+  ansible.builtin.file:
+    path: "{{ mariadb_key_path }}{{ mariadb_key_name }}"
+    state: absent

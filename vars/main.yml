@@ -10,3 +10,7 @@ mariadb_crond_path: /etc/cron.d/
 mariadb_dump_bin: /usr/bin/mariadb-dump
 mariadb_alternatives_name: my.cnf
 mariadb_default_unix_socket: /run/mysqld/mysqld.sock
+
+mariadb_key_url: https://supplychain.mariadb.com/mariadb-keyring-2019.gpg
+mariadb_key_path: /usr/share/keyrings/
+mariadb_key_name: mariadb-keyring-2019.gpg

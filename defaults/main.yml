@@ -1,4 +1,6 @@
 ---
+mariadb_version: "10.8"
+
 # Set to false, if you don't want MariaDB to start after reboot
 mariadb_enabled_on_startup: true
 
