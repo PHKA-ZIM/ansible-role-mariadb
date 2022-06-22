@@ -99,7 +99,7 @@ mariadb_replication_users: []
 mariadb_backup_db: false
 mariadb_backup_db_cron_min: 50
 mariadb_backup_db_cron_hour: 00
-mariadb_backup_db_dir: /opt/backup
+mariadb_backup_db_dir: /opt/backup/
 # set to "1>" to get only STDERR on cron
 mariadb_backup_cron_std_output: "2>&1 | tee"
 
