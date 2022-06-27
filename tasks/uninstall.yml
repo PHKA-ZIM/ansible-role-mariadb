@@ -5,6 +5,11 @@
     name: mysql
     state: stopped
 
+- name: Remove backup cron if exists
+  ansible.builtin.file:
+    "{{ mariadb_crond_path }}/mariadb-backup"
+    state: absent
+
 - name: Remove repositories for mariadb and uninstall it
   ansible.builtin.import_role:  
     name: ansible-role-installer
@@ -18,5 +23,5 @@
 - name: Remove key
   become: true
   ansible.builtin.file:
-    path: "{{ mariadb_key_path }}{{ mariadb_key_name }}"
+    path: "{{ mariadb_key_path }}/{{ mariadb_key_name }}"
     state: absent
