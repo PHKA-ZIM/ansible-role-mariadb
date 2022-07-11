@@ -12,5 +12,5 @@
   become: true
   template:
     src: mariadb-backup.j2
-    dest: "{{ mariadb_crond_path }}/mariadb-backup"
+    dest: "{{ mariadb_backup_cron_path }}/{{ mariadb_backup_cron_filename }}"
     mode: 0644

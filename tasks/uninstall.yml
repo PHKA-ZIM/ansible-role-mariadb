@@ -7,7 +7,7 @@
 
 - name: Remove backup cron if exists
   ansible.builtin.file:
-    "{{ mariadb_crond_path }}/mariadb-backup"
+    "{{ mariadb_backup_cron_path }}/{{ mariadb_backup_cron_filename }}"
     state: absent
 
 - name: Remove repositories for mariadb and uninstall it
