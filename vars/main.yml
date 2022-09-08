@@ -1,6 +1,7 @@
 ---
 mariadb_packages:
   - mariadb-server
+  - mariadb-backup
   - python3-pymysql
   - cron
 
