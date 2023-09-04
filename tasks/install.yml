@@ -1,33 +1,32 @@
 ---
-- name: include task setup.yml
-  ansible.builtin.import_tasks: setup.yml
+- name: Copy key
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ mariadb_key_url }}"
+    checksum: "sha256:{{ mariadb_key_url }}.sha256"
+    dest: "{{ mariadb_key_path }}/{{ mariadb_key_name }}"
+    force: true
 
-- name: include task configure.yml
-  ansible.builtin.import_tasks: configure.yml
+- name: Ensure that packages are installed
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    update_cache: true
+    state: present
+  loop: "{{ mariadb_requirements }}"
 
-- name: include task databases.yml
-  ansible.builtin.import_tasks: databases.yml
-  when:
-    - mariadb_databases is defined
-    - mariadb_replication_role != "replica"
+- name: Ensure that repositories are installed
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "{{ item }}"
+    update_cache: true
+    state: present
+  loop: "{{ mariadb_repositories }}"
 
-- name: include task users.yml
-  ansible.builtin.import_tasks: users.yml
-  when:
-    - mariadb_users is defined
-    - mariadb_replication_role != "replica"
-
-- name: include task replication_primary.yml
-  ansible.builtin.import_tasks: replication_primary.yml
-  when: mariadb_replication_role == "primary"
-
-- name: include task replication_replica.yml
-  ansible.builtin.import_tasks: replication_replica.yml
-  when:
-    - not ansible_check_mode
-    - mariadb_replication_role == "replica"
-
-- name: include task backup.yml
-  ansible.builtin.import_tasks: backup.yml
-  when:
-    - mariadb_backup_db
+- name: Ensure that packages are installed
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    update_cache: true
+    state: present
+  loop: "{{ mariadb_packages }}"

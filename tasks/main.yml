@@ -1,8 +1,45 @@
 ---
 - name: Install mariadb
-  ansible.builtin.include_tasks: install.yml
   when: mariadb_uninstall == false
+  block:
+    - name: Install
+      ansible.builtin.include_tasks: install.yml
+    
+    - name: Setup
+      ansible.builtin.include_tasks: setup.yml
+
+    - name: Configure databases
+      when:
+        - mariadb_databases is defined
+        - mariadb_replication_role != "replica"
+      ansible.builtin.include_tasks: databases.yml
+
+    - name: Configure user accounts
+      when:
+        - mariadb_users is defined
+        - mariadb_replication_role != "replica"
+      ansible.builtin.include_tasks: users.yml
+
+    - name: Configure replication on primary
+      when: mariadb_replication_role == "primary"
+      ansible.builtin.include_tasks: replication_primary.yml
+
+    - name: Configure replication on secondary
+      when:
+        - not ansible_check_mode
+        - mariadb_replication_role == "replica"
+      ansible.builtin.include_tasks: replication_replica.yml
+
+    - name: Configure database backup
+      when:
+        - mariadb_backup_db
+      ansible.builtin.include_tasks: backup.yml
 
 - name: Uninstall mariadb
-  ansible.builtin.include_tasks: uninstall.yml
   when: mariadb_uninstall == true
+  block:
+    - name: Clean
+      ansible.builtin.include_tasks: clean.yml
+
+    - name: Uninstall
+      ansible.builtin.include_tasks: uninstall.yml

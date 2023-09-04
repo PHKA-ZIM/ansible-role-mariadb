@@ -3,7 +3,17 @@ mariadb_packages:
   - mariadb-server
   - mariadb-backup
   - python3-pymysql
+
+mariadb_requirements:
   - cron
+
+mariadb_key_url: https://supplychain.mariadb.com/mariadb-keyring-2019.gpg
+mariadb_key_path: /usr/share/keyrings/
+mariadb_key_name: mariadb-keyring-2019.gpg
+
+mariadb_repositories:
+  - "deb [arch=amd64,arm64 signed-by={{ mariadb_key_path }}{{ mariadb_key_name }}] https://dlm.mariadb.com/repo/mariadb-server/{{ mariadb_version }}/repo/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main"
+  - "deb [arch=amd64,arm64 signed-by={{ mariadb_key_path }}{{ mariadb_key_name }}] https://dlm.mariadb.com/repo/mariadb-server/{{ mariadb_version }}/repo/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main/debug"
 
 mariadb_user: mysql
 mariadb_path: /etc/mysql/
@@ -11,7 +21,3 @@ mariadb_backup_cron_path: /etc/cron.d/
 mariadb_dump_bin: /usr/bin/mariadb-dump
 mariadb_alternatives_name: my.cnf
 mariadb_default_unix_socket: /run/mysqld/mysqld.sock
-
-mariadb_key_url: https://supplychain.mariadb.com/mariadb-keyring-2019.gpg
-mariadb_key_path: /usr/share/keyrings/
-mariadb_key_name: mariadb-keyring-2019.gpg

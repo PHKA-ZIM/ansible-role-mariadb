@@ -7,4 +7,4 @@
     encoding: "{{ item.encoding | default('utf8mb4') }}"
     state: "{{ item.state | default('present') }}"
     login_unix_socket: "{{ mariadb_unix_socket }}"
-  with_items: "{{ mariadb_databases }}"
+  loop: "{{ mariadb_databases | flatten(levels=1) }}"

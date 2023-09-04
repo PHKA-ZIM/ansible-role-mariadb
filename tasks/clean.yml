@@ -1,0 +1,19 @@
+---
+- name: Ensure MariaDB databases are absent
+  become: true
+  community.mysql.mysql_db:
+    name: "{{ item.name }}"
+    state: absent
+    login_unix_socket: "{{ mariadb_unix_socket }}"
+  loop: "{{ mariadb_databases | flatten(levels=1) }}"
+
+- name: Stop mariadb
+  become: true
+  ansible.builtin.service:
+    name: mysql
+    state: stopped
+
+- name: Remove backup cron if exists
+  ansible.builtin.file:
+    "{{ mariadb_backup_cron_path }}/{{ mariadb_backup_cron_filename }}"
+    state: absent

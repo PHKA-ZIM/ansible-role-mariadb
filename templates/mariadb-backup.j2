@@ -7,9 +7,13 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # m h dom mon dow user command
 
 {% if mariadb_backup_db_name | length > 0 %}
-{% for db_name in mariadb_backup_db_name %}
-{{ mariadb_backup_db_cron_min }} {{ mariadb_backup_db_cron_hour }} * * * root {{ mariadb_dump_bin }} --databases {{ db_name }}{% if mariadb_replication_role == "replica" %} --dump-slave=2{% endif %}{% if mariadb_replication_role == "primary" %} --dump-master=2{% endif %} | gzip > "{{ mariadb_backup_db_dir }}/$(date +\%F_\%H\%M\%S)_{{ db_name }}.sql.gz"{% if mariadb_backup_remove_backups %} && find {{ mariadb_backup_db_dir }} -maxdepth 1 -name "*_{{ db_name }}.sql.gz" -type f -exec ls -1t {} + | tail -n +{{ mariadb_backup_remove_count + 1 }} | xargs rm -f{% endif %} {{ mariadb_backup_cron_std_output }} "{{ mariadb_backup_db_dir }}/mariadb_dump_db.log"
-{% endfor %}
+    {% for db_name in mariadb_backup_db_name %}
+        {% if mariadb_backup_db_cron_schedule and mariadb_dump_bin and db_name and mariadb_replication_role and mariadb_backup_db_dir and mariadb_backup_cron_std_output %}
+{{ mariadb_backup_db_cron_schedule }} root {{ mariadb_dump_bin }} --databases {{ db_name }}{% if mariadb_replication_role == "replica" %} --dump-slave=2{% endif %}{% if mariadb_replication_role == "primary" %} --dump-master=2{% endif %} | gzip > "{{ mariadb_backup_db_dir }}/$(date +\%F_\%H\%M\%S)_{{ db_name }}.sql.gz"{% if mariadb_backup_remove_backups %} && find {{ mariadb_backup_db_dir }} -maxdepth 1 -name "*_{{ db_name }}.sql.gz" -type f -exec ls -1t {} + | tail -n +{{ (mariadb_backup_remove_count | default(10)) + 1 }} | xargs rm -f{% endif %} {{ mariadb_backup_cron_std_output }} "{{ mariadb_backup_db_dir }}/mariadb_dump_db.log"
+        {% else %}
+# backup job configuration is incorrect
+        {% endif %}
+    {% endfor %}
 {% else %}
 # no backup jobs defined
 {% endif %}

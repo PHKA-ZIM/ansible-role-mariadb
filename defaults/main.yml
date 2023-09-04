@@ -97,8 +97,7 @@ mariadb_replication_users: []
 
 # Backups
 mariadb_backup_db: false
-mariadb_backup_db_cron_min: 50
-mariadb_backup_db_cron_hour: 00
+mariadb_backup_db_cron_schedule: "50 0 * * *"
 mariadb_backup_db_dir: /opt/backup/
 # set to "1>" to get only STDERR on cron
 mariadb_backup_cron_filename: mariadb-backup
@@ -112,3 +111,5 @@ mariadb_backup_db_name: []
 
 # Set true to uninstall MariaDB
 mariadb_uninstall: false
+mariadb_autoremove: true
+mariadb_purge: true
