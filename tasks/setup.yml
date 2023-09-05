@@ -63,6 +63,7 @@
 - name: Set alternatives link
   become: true
   community.general.alternatives:
+    link: "{{ mariadb_path }}/{{ mariadb_alternatives_name }}"
     name: "{{ mariadb_alternatives_name }}"
     path: "{{ mariadb_config_file }}"
   notify: restart mariadb
