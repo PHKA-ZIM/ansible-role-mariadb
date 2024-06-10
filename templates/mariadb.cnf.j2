@@ -30,6 +30,8 @@ log_bin
 expire_logs_days = {{ mariadb_expire_logs_days }}
 max_binlog_size = {{ mariadb_max_binlog_size }}
 binlog_format = {{ mariadb_binlog_format }}
+{{ mariadb_replication_raw }}
+
 # the following permits to simplify the process of moving a secondary to a primary
 # role by ensuring that replication is not started on primary
 skip-slave-start
