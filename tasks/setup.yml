@@ -62,7 +62,7 @@
 
 - name: Set symlink target
   become: true
-  community.general.file:
+  ansible.builtin.file:
     src: "{{ mariadb_path }}/{{ mariadb_configfile_name }}"
     dest: "{{ mariadb_config_file }}"
     state: link
