@@ -64,8 +64,16 @@
   become: true
   ansible.builtin.file:
     src: "{{ mariadb_config_file }}"
-    dest: "{{ mariadb_path }}/{{ mariadb_configfile_name }}"
+    dest: "{{ mariadb_alternatives_path }}{{ mariadb_alternatives_name }}"
     state: link
+  notify: restart mariadb
+
+- name: Set alternatives link
+  become: true
+  community.general.alternatives:
+    link: "{{ mariadb_path }}{{ mariadb_alternatives_name }}"
+    name: "{{ mariadb_alternatives_name }}"
+    path: "{{ mariadb_config_file }}"
   notify: restart mariadb
 
 - name: Be sure system databases are installed correctly
