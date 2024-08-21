@@ -63,8 +63,8 @@
 - name: Set symlink target
   become: true
   ansible.builtin.file:
-    src: "{{ mariadb_config_file }}"
-    dest: "{{ mariadb_alternatives_path }}{{ mariadb_alternatives_name }}"
+    src: "{{ mariadb_alternatives_path }}{{ mariadb_alternatives_name }}"
+    dest: "{{ mariadb_path }}{{ mariadb_configfile_name }}"
     state: link
   notify: restart mariadb
 
