@@ -15,5 +15,5 @@
 
 - name: Remove backup cron if exists
   ansible.builtin.file:
-    "{{ mariadb_backup_cron_path }}/{{ mariadb_backup_cron_filename }}"
+    path: "{{ mariadb_backup_cron_path }}/{{ mariadb_backup_cron_filename }}"
     state: absent
