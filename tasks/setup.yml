@@ -52,28 +52,13 @@
         path: "{{ mariadb_stored_datadir }}"
         state: absent
 
-- name: Copy global MariaDB configuration
+- name: Copy MariaDB configuration
   become: true
   ansible.builtin.template:
     src: mariadb.cnf.j2
-    dest: "{{ mariadb_config_file }}"
+    dest: "{{ mariadb_config_path }}/{{ mariadb_config_file }}"
+    mode: "{{ mariadb_config_file_mode }}"
     force: true
-  notify: restart mariadb
-
-- name: Set symlink target
-  become: true
-  ansible.builtin.file:
-    src: "{{ mariadb_alternatives_path }}{{ mariadb_alternatives_name }}"
-    dest: "{{ mariadb_path }}{{ mariadb_configfile_name }}"
-    state: link
-  notify: restart mariadb
-
-- name: Set alternatives link
-  become: true
-  community.general.alternatives:
-    link: "{{ mariadb_path }}{{ mariadb_alternatives_name }}"
-    name: "{{ mariadb_alternatives_name }}"
-    path: "{{ mariadb_config_file }}"
   notify: restart mariadb
 
 - name: Be sure system databases are installed correctly
