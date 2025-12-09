@@ -103,8 +103,8 @@ mariadb_replication_users: []
 mariadb_backup_db: false
 mariadb_backup_db_cron_schedule: "50 0 * * *"
 mariadb_backup_db_dir: /opt/backup/
-# set to "1>" to get only STDERR on cron
 mariadb_backup_cron_filename: mariadb-backup
+# set to "1>" to get only STDERR on cron
 mariadb_backup_cron_std_output: "2>&1 | tee"
 
 mariadb_backup_remove_backups: true
@@ -112,6 +112,11 @@ mariadb_backup_remove_count: 24
 
 # DB to backup
 mariadb_backup_db_name: []
+
+# Logrotate binlog
+mariadb_logrotate: true
+mariadb_logrotate_cron_filename: mariadb-logrotate
+mariadb_logrotate_cron_schedule: "*/10 * * * *"
 
 # Set true to uninstall MariaDB
 mariadb_uninstall: false

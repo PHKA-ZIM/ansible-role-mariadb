@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+
+# use /bin/bash to run commands, no matter what /etc/passwd says
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# m h dom mon dow user command
+
+{% if mariadb_replication_role and mariadb_logrotate_cron_schedule and mariadb_bin and mariadb_unix_socket %}
+{{ mariadb_logrotate_cron_schedule }} root {{ mariadb_bin }} --socket={{mariadb_unix_socket}} -e "FLUSH BINARY LOGS;"
+{% else %}
+# logrotation not defined
+{% endif %}

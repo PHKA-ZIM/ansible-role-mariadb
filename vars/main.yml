@@ -20,4 +20,6 @@ mariadb_path: /etc/mysql/
 mariadb_config_file_mode: "644"
 mariadb_backup_cron_path: /etc/cron.d/
 mariadb_dump_bin: /usr/bin/mariadb-dump
+mariadb_bin: /usr/bin/mariadb
+mariadb_logrotate_cron_path: /etc/cron.d/
 mariadb_default_unix_socket: /run/mysqld/mysqld.sock

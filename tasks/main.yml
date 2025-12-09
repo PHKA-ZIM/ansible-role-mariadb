@@ -30,6 +30,13 @@
         - mariadb_replication_role == "replica"
       ansible.builtin.include_tasks: replication_replica.yml
 
+    - name: Configure logrotate for binlog
+      when:
+        - mariadb_logrotate
+        - mariadb_replication_role == "primary" or
+          mariadb_replication_role == "replica"
+      ansible.builtin.include_tasks: logrotate.yml
+
     - name: Configure database backup
       when:
         - mariadb_backup_db

@@ -1,0 +1,7 @@
+---
+- name: Create cron file
+  become: true
+  ansible.builtin.template:
+    src: mariadb-logrotate.j2
+    dest: "{{ mariadb_logrotate_cron_path }}/{{ mariadb_logrotate_cron_filename }}"
+    mode: 0644
