@@ -2,7 +2,7 @@
 - name: Ensure replication user exists on primary
   when: not ansible_check_mode
   become: true
-  ansible.mysqlmysql_user:
+  ansible.mysql.mysql_user:
     name: "{{ item.name }}"
     host: "{{ item.host | default('%') }}"
     password: "{{ item.password }}"
