@@ -1,7 +1,7 @@
 ---
 - name: Ensure MariaDB databases are absent
   become: true
-  community.mysql.mysql_db:
+  ansible.mysqlmysql_db:
     name: "{{ item.name }}"
     state: absent
     login_unix_socket: "{{ mariadb_unix_socket }}"

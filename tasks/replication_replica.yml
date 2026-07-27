@@ -1,7 +1,7 @@
 ---
 - name: Check replica replication status
   become: true
-  community.mysql.mysql_replication:
+  ansible.mysqlmysql_replication:
     mode: getreplica
     login_unix_socket: "{{ mariadb_unix_socket }}"
   register: replica
@@ -10,7 +10,7 @@
 - name: Stop replication on error
   when: replica.Is_Replica and replica.Last_IO_Errno in [1045]
   become: true
-  community.mysql.mysql_replication:
+  ansible.mysqlmysql_replication:
     mode: stopreplica
     login_unix_socket: "{{ mariadb_unix_socket }}"
   register: hasError
@@ -18,14 +18,14 @@
 - name: Reset replication
   when: not replica.Is_Replica or hasError.changed
   become: true
-  community.mysql.mysql_replication:
+  ansible.mysqlmysql_replication:
     mode: resetreplica
     login_unix_socket: "{{ mariadb_unix_socket }}"
 
 - name: Configure replication on the replica
   when: not replica.Is_Replica or hasError.changed
   become: true
-  community.mysql.mysql_replication:
+  ansible.mysqlmysql_replication:
     mode: changeprimary
     primary_host: "{{ mariadb_replication_primary_ip }}" 
     primary_user: "{{ item.name }}"
@@ -37,7 +37,7 @@
 
 - name: Check replica replication status (second time)
   become: true
-  community.mysql.mysql_replication:
+  ansible.mysqlmysql_replication:
     mode: getreplica
     login_unix_socket: "{{ mariadb_unix_socket }}"
   register: replica2
@@ -46,6 +46,6 @@
 - name: Start replica replication
   when: replica2.Slave_IO_Running == "No"
   become: true
-  community.mysql.mysql_replication:
+  ansible.mysqlmysql_replication:
     mode: startreplica
     login_unix_socket: "{{ mariadb_unix_socket }}"
